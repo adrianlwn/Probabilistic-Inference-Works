@@ -214,7 +214,7 @@ class GaussianProcessRegression():
 
 
         # Combine gradients
-        gradients = np.array([grad_ln_sigma_b, grad_ln_sigma_v, grad_ln_sigma_f, grad_ln_length_scale, grad_ln_sigma_n])
+        gradients = np.array([0.1112, grad_ln_sigma_v, grad_ln_sigma_f, grad_ln_length_scale, grad_ln_sigma_n])
 
         # Return the gradients
         return gradients
@@ -247,6 +247,7 @@ class GaussianProcessRegression():
     # ##########################################################################
     def optimize(self, params, disp=True):
         res = minimize(self.logMarginalLikelihood, params, method ='BFGS', jac = self.gradLogMarginalLikelihood, options = {'disp':disp})
+        print(res)
         return res.x
 
 if __name__ == '__main__':
