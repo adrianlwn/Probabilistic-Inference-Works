@@ -184,11 +184,13 @@ class GaussianProcessRegression():
         if params is not None:
             K = self.KMat(self.X, params)
 
-        grad_ln_sigma_b = grad_ln_sigma_v = grad_ln_sigma_f = grad_ln_length_scale = grad_ln_sigma_n = 0
+        grad_ln_sigma_v = grad_ln_sigma_f = grad_ln_length_scale = grad_ln_sigma_n = 0
         # Task 5:
         # TODO: calculate the gradients of the negative log marginal likelihood
         # wrt. the hyperparameters
-
+        K_inv_t = np.transpose(np.linalg.inv(K))
+        grad_com = - np.matmul(np.matmul(np.matmul( K_inv_t,self.y),self.y.transpose()),K_inv_t)
+        grad_ln_sigma_b = np.matmul(grad_com, np.ones(self.K.shape)*2*self.k.sigma2_b)
 
         # Combine gradients
         gradients = np.array([grad_ln_sigma_b, grad_ln_sigma_v, grad_ln_sigma_f, grad_ln_length_scale, grad_ln_sigma_n])
@@ -233,10 +235,10 @@ if __name__ == '__main__':
     X_train, y_train, X_test, y_test = loadData(df)
     print(X_train.shape,y_train.shape)
     print(X_test.shape,y_test.shape)
-    params = [1,1,1,1,1]
+    params = [0,0,0,np.log(0.1),0.5*np.log(0.5)]
     my_k = LinearPlusRBF(params=params)
     my_GP = GaussianProcessRegression(X=X_train, y=y_train, k=my_k)
-    print(my_GP.predict(Xa=X_test))
+    my_GP.optimize(params=params,disp=True)
 
     ##########################
     # You can put your tests here - marking
