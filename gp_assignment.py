@@ -227,14 +227,14 @@ class GaussianProcessRegression():
 if __name__ == '__main__':
 
     np.random.seed(42)
-    df = 'boston_housing.txt'
-    X_train, y_train, X_test, y_test = loadData(df)
-    print(X_train.shape,y_train.shape)
-    print(X_test.shape,y_test.shape)
-    params = [1,1,1,1,1]
-    my_k = LinearPlusRBF(params=params)
-    my_GP = GaussianProcessRegression(X=X_train, y=y_train, k=my_k)
-    print(my_GP.predict(Xa=X_test))
+    # df = 'boston_housing.txt'
+    # X_train, y_train, X_test, y_test = loadData(df)
+    # print(X_train.shape,y_train.shape)
+    # print(X_test.shape,y_test.shape)
+    # params = [1,1,1,1,1]
+    # my_k = LinearPlusRBF(params=params)
+    # my_GP = GaussianProcessRegression(X=X_train, y=y_train, k=my_k)
+    # print(my_GP.predict(Xa=X_test))
 
     ##########################
     # You can put your tests here - marking
