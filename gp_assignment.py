@@ -187,24 +187,30 @@ class GaussianProcessRegression():
         if params is not None:
             K = self.KMat(self.X, params)
 
-        grad_ln_sigma_v = grad_ln_sigma_f = grad_ln_length_scale = grad_ln_sigma_n = 0
         # Task 5:
         # TODO: calculate the gradients of the negative log marginal likelihood
         # wrt. the hyperparameters
         L_inv = np.linalg.inv(self.L)
         K_inv = np.matmul(L_inv.transpose(),L_inv)
 
-        dK_sigma_b =  np.ones(self.K.shape)*2*self.k.sigma2_b
-        dK_sigma_v =  np.ones(self.K.shape)*2*self.k.sigma2_v * np.matmul(self.X,self.X.transpose())
+
 
         def gradcom(dK_sigma):
             g1 = - np.matmul(np.matmul(np.matmul(np.matmul(self.y.transpose(),K_inv),dK_sigma),K_inv),self.y)
             g2 = np.trace(np.matmul(K_inv,dK_sigma))
-            g3 = 0
             return (g1 + g2)/2
+
+        dK_sigma_b =  np.ones(self.K.shape)*2*self.k.sigma2_b**(1/2)
+        dK_sigma_v =  np.ones(self.K.shape)*2*self.k.sigma2_v**(1/2) * np.matmul(self.X,self.X.transpose())
+        dK_sigma_f = 2 * self.k.sigma2_f**(1/2) * np.array([[ np.exp( - np.linalg.norm(self.X[i,:]-self.X[j,:],ord=2)**2 / (2* self.k.length_scale**2) ) for i in range(self.n)]for j in range(self.n)] )
+        dK_length_scale = self.k.sigma2_f * np.array([[ np.linalg.norm(self.X[i,:]-self.X[j,:],ord=2)**2 / ( self.k.length_scale**3) * np.exp( - np.linalg.norm(self.X[i,:]-self.X[j,:],ord=2)**2 / (2* self.k.length_scale**2) ) for i in range(self.n)]for j in range(self.n)] )
+        dK_sigma_n = 2 * self.k.sigma2_n**(1/2) * np.eye(self.K.shape[0])
 
         grad_ln_sigma_b = gradcom(dK_sigma_b)
         grad_ln_sigma_v = gradcom(dK_sigma_v)
+        grad_ln_sigma_f = gradcom(dK_sigma_f)
+        grad_ln_length_scale = gradcom(dK_length_scale)
+        grad_ln_sigma_n = gradcom(dK_sigma_n)
 
         print(grad_ln_sigma_b.shape,grad_ln_sigma_v.shape)
 
