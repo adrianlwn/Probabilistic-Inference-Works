@@ -99,7 +99,7 @@ class LinearPlusRBF():
             return self.sigma2_b + self.sigma2_v * np.dot(xp,xq)
 
         def k_RBF(xp,xq):
-            return self.sigma2_f * np.exp( - np.linalg.norm(xp-xq,ord=2)**2 / (2* self.length_scale**2) )
+            return self.sigma2_f * np.exp( - np.linalg.norm(xp-xq,ord=2)**2 / float(2* self.length_scale**2) )
 
         covMat1 = np.array([[k_linear(X[i,:],X[j,:]) for i in range(n)] for j in range(n)])
         covMat2 = np.array([[k_RBF(X[i,:],X[j,:]) for i in range(n)] for j in range(n)])
@@ -175,7 +175,7 @@ class GaussianProcessRegression():
         L_inv = np.linalg.inv(self.L)
         K_inv = np.matmul(L_inv.transpose(),L_inv)
         K_det = np.linalg.det(self.L)**2
-        mll = (np.matmul(np.matmul(np.transpose(self.y),K_inv),self.y) + np.log(K_det) + self.n*np.log(2*np.pi))/2
+        mll = float((np.matmul(np.matmul(np.transpose(self.y),K_inv),self.y) + np.log(K_det) + self.n*np.log(2*np.pi))/2.)
         # Return mll
         return mll
 
@@ -202,9 +202,9 @@ class GaussianProcessRegression():
 
         dK_sigma_b =  np.ones(self.K.shape)*2*self.k.sigma2_b**(1/2.)
         dK_sigma_v =  np.ones(self.K.shape)*2*self.k.sigma2_v**(1/2.) * np.matmul(self.X,self.X.transpose())
-        dK_sigma_f = 2 * self.k.sigma2_f**(1/2) * np.array([[ np.exp( - np.linalg.norm(self.X[i,:]-self.X[j,:],ord=2)**2 / (2* self.k.length_scale**2) ) for i in range(self.n)]for j in range(self.n)] )
-        dK_length_scale = self.k.sigma2_f * np.array([[ np.linalg.norm(self.X[i,:]-self.X[j,:],ord=2)**2 / ( self.k.length_scale**3) * np.exp( - np.linalg.norm(self.X[i,:]-self.X[j,:],ord=2)**2 / (2* self.k.length_scale**2) ) for i in range(self.n)]for j in range(self.n)] )
-        dK_sigma_n = 2 * self.k.sigma2_n**(1/2) * np.eye(self.K.shape[0])
+        dK_sigma_f = 2 * self.k.sigma2_f**(1/2.) * np.array([[ np.exp( - np.linalg.norm(self.X[i,:]-self.X[j,:],ord=2)**2 / float(2* self.k.length_scale**2) ) for i in range(self.n)]for j in range(self.n)] )
+        dK_length_scale = self.k.sigma2_f * np.array([[ np.linalg.norm(self.X[i,:]-self.X[j,:],ord=2)**2 / float( self.k.length_scale**3) * np.exp( - np.linalg.norm(self.X[i,:]-self.X[j,:],ord=2)**2 / float(2* self.k.length_scale**2) ) for i in range(self.n)]for j in range(self.n)] )
+        dK_sigma_n = 2 * self.k.sigma2_n**(1/2.) * np.eye(self.K.shape[0])
 
         grad_ln_sigma_b = float(gradcom(dK_sigma_b))
         grad_ln_sigma_v = float(gradcom(dK_sigma_v))
@@ -259,8 +259,8 @@ if __name__ == '__main__':
     params = [0,0,0,np.log(0.1),0.5*np.log(0.5)]
     my_k = LinearPlusRBF(params=params)
     my_GP = GaussianProcessRegression(X=X_train, y=y_train, k=my_k)
-    print(my_GP.logMarginalLikelihood().shape)
-    my_GP.gradLogMarginalLikelihood()
+    print(my_GP.logMarginalLikelihood())
+    print(my_GP.gradLogMarginalLikelihood())
     print(my_GP.optimize(params=params,disp=True))
 
     ##########################
