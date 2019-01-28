@@ -151,7 +151,7 @@ class GaussianProcessRegression():
         # TODO: compute the mean and covariance of the prediction
         Ka = self.k.covMatrix(self.X,Xa)
         Kxa = Ka[:self.X.shape[0],-Xa.shape[0]:]
-        Kaa = Ka[-Xa.shape[0]:,-Xa.shape[0]:] - self.k.ln_sigma_n * np.eye(Xa.shape[0])
+        Kaa = Ka[-Xa.shape[0]:,-Xa.shape[0]:] - self.k.sigma2_n * np.eye(Xa.shape[0])
         K_noise_inv = np.linalg.inv(self.K)
         mean_fa = np.matmul( np.transpose(Kxa) ,  np.matmul(K_noise_inv ,self.y))
         cov_fa =  Kaa - np.matmul(np.matmul(np.transpose(Kxa),  K_noise_inv  ), Kxa)
@@ -168,10 +168,10 @@ class GaussianProcessRegression():
         if params is not None:
             K = self.KMat(self.X, params)
 
-        mll = 0
         # Task 4:
         # TODO: Calculate the log marginal likelihood ( mll ) of self.y
-
+        #K_inv =
+        #mll =
         # Return mll
         return mll
 
