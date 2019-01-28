@@ -154,7 +154,7 @@ class GaussianProcessRegression():
         Kaa = Ka[-Xa.shape[0]:,-Xa.shape[0]:]
         K_noise_inv = np.linalg.inv(self.K)
         mean_fa = np.matmul( np.transpose(Kxa) ,  np.matmul(K_noise_inv ,self.y))
-        cov_fa = Kaa - np.matmul(np.matmul(np.transpose(Kxa),  K_noise_inv ), Kxa)
+        cov_fa = np.diag( Kaa - np.matmul(np.matmul(np.transpose(Kxa),  K_noise_inv ), Kxa))
         # Return the mean and covariance
 
         return mean_fa, cov_fa
