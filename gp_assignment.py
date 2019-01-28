@@ -192,19 +192,17 @@ class GaussianProcessRegression():
         # wrt. the hyperparameters
         L_inv = np.linalg.inv(self.L)
         K_inv = np.matmul(L_inv.transpose(),L_inv)
-
-
-
+        
         def gradcom(dK_sigma):
             g1 = - np.matmul(np.matmul(np.matmul(np.matmul(self.y.transpose(),K_inv),dK_sigma),K_inv),self.y)
             g2 = np.trace(np.matmul(K_inv,dK_sigma))
             return (g1 + g2)/2.0
 
-        dK_sigma_b =  np.ones(self.K.shape)*2*self.k.sigma2_b**(1/2.)
-        dK_sigma_v =  np.ones(self.K.shape)*2*self.k.sigma2_v**(1/2.) * np.matmul(self.X,self.X.transpose())
-        dK_sigma_f = 2 * self.k.sigma2_f**(1/2.) * np.array([[ np.exp( - np.linalg.norm(self.X[i,:]-self.X[j,:],ord=2)**2 / float(2* self.k.length_scale**2) ) for i in range(self.n)]for j in range(self.n)] )
+        dK_sigma_b =  np.ones(self.K.shape)*2*self.k.sigma2_b**(1)
+        dK_sigma_v =  np.ones(self.K.shape)*2*self.k.sigma2_v**(1) * np.matmul(self.X,self.X.transpose())
+        dK_sigma_f = 2 * self.k.sigma2_f**(1) * np.array([[ np.exp( - np.linalg.norm(self.X[i,:]-self.X[j,:],ord=2)**2 / float(2* self.k.length_scale**2) ) for i in range(self.n)]for j in range(self.n)] )
         dK_length_scale = self.k.sigma2_f * np.array([[ np.linalg.norm(self.X[i,:]-self.X[j,:],ord=2)**2 / float( self.k.length_scale**3) * np.exp( - np.linalg.norm(self.X[i,:]-self.X[j,:],ord=2)**2 / float(2* self.k.length_scale**2) ) for i in range(self.n)]for j in range(self.n)] )
-        dK_sigma_n = 2 * self.k.sigma2_n**(1/2.) * np.eye(self.K.shape[0])
+        dK_sigma_n = 2 * self.k.sigma2_n**(1) * np.eye(self.K.shape[0])
 
         grad_ln_sigma_b = float(gradcom(dK_sigma_b))
         grad_ln_sigma_v = float(gradcom(dK_sigma_v))
@@ -214,7 +212,7 @@ class GaussianProcessRegression():
 
 
         # Combine gradients
-        gradients = np.array([0.1112, grad_ln_sigma_v, grad_ln_sigma_f, grad_ln_length_scale, grad_ln_sigma_n])
+        gradients = np.array([grad_ln_sigma_b, grad_ln_sigma_v, grad_ln_sigma_f, grad_ln_length_scale, grad_ln_sigma_n])
 
         # Return the gradients
         return gradients
