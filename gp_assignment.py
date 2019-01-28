@@ -98,8 +98,8 @@ class LinearPlusRBF():
         def k_linear(xp,xq):
             return self.sigma2_b + self.sigma2_v * np.dot(xp,xq)
 
-         def k_RBF(xp,xq):
-             return self.sigma2_f * np.exp( - np.linalg.norm(xp-xq,ord=2)**2 / (2* self.length_scale**2) )
+        def k_RBF(xp,xq):
+            return self.sigma2_f * np.exp( - np.linalg.norm(xp-xq,ord=2)**2 / (2* self.length_scale**2) )
 
         covMat1 = np.array([[k_linear(X[i,:],X[j,:]) for i in range(n)] for j in range(n)])
         covMat2 = np.array([[k_RBF(X[i,:],X[j,:]) for i in range(n)] for j in range(n)])
