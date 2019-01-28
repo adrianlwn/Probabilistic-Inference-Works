@@ -172,7 +172,7 @@ class GaussianProcessRegression():
         # TODO: Calculate the log marginal likelihood ( mll ) of self.y
         K_inv = np.linalg.inv(self.K)
         K_det = np.linalg.det(self.K)
-        mll = (np.matmul(np.matmul(self.y,K_inv),self.y) + np.log(K_det) + self.n*np.log(2*np.pi))/2
+        mll = (np.matmul(np.matmul(np.transpose(self.y),K_inv),self.y) + np.log(K_det) + self.n*np.log(2*np.pi))/2
         # Return mll
         return mll
 
