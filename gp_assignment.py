@@ -30,10 +30,10 @@ def loadData(df):
 # Returns a single sample from a multivariate Gaussian with mean and cov.
 # ##############################################################################
 def multivariateGaussianDraw(mean, cov):
-    sample = np.zeros((mean.shape[0], )) # This is only a placeholder
+    #sample = np.zeros((mean.shape[0], )) # This is only a placeholder
     # Task 1:
     # TODO: Implement a draw from a multivariate Gaussian here
-
+    sample = np.random.multivariate_normal(mean,cov)
     # Return drawn sample
     return sample
 
@@ -50,7 +50,7 @@ class LinearPlusRBF():
         self.ln_sigma_f = params[2]
         self.ln_length_scale = params[3]
         self.ln_sigma_n = params[4]
-        
+
         self.sigma2_b = np.exp(2*self.ln_sigma_b)
         self.sigma2_v = np.exp(2*self.ln_sigma_v)
         self.sigma2_f = np.exp(2*self.ln_sigma_f)
@@ -63,7 +63,7 @@ class LinearPlusRBF():
         self.ln_sigma_f = params[2]
         self.ln_length_scale = params[3]
         self.ln_sigma_n = params[4]
-        
+
         self.sigma2_b = np.exp(2*self.ln_sigma_b)
         self.sigma2_v = np.exp(2*self.ln_sigma_v)
         self.sigma2_f = np.exp(2*self.ln_sigma_f)
@@ -95,14 +95,14 @@ class LinearPlusRBF():
 
         # Task 2:
         # TODO: Implement the covariance matrix here
-        
-        
-        
-        
-        
-        
+
+
+
+
+
+
         covMat = covMat1 + covMat2
-        
+
         # If additive Gaussian noise is provided, this adds the sigma2_n along
         # the main diagonal. So the covariance matrix will be for [y y*]. If
         # you want [y f*], simply subtract the noise from the lower right
@@ -217,6 +217,7 @@ class GaussianProcessRegression():
 if __name__ == '__main__':
 
     np.random.seed(42)
+
 
     ##########################
     # You can put your tests here - marking
