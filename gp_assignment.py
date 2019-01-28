@@ -193,8 +193,20 @@ class GaussianProcessRegression():
         # wrt. the hyperparameters
         L_inv = np.linalg.inv(self.L)
         K_inv = np.matmul(L_inv.transpose(),L_inv)
-        grad_com = - np.matmul(np.matmul(np.matmul( K_inv,self.y),self.y.transpose()),K_inv)
-        grad_ln_sigma_b = np.matmul(grad_com, np.ones(self.K.shape)*2*self.k.sigma2_b)
+
+        dK_sigma_b =  np.ones(self.K.shape)*2*self.k.sigma2_b
+        dK_sigma_v =  np.ones(self.K.shape)*2*self.k.sigma2_v * np.matmul(self.X,self.X.transpose())
+
+        def gradcom(dK_sigma):
+            g1 = - np.matmul(np.matmul(np.matmul(np.matmul(self.y.transpose(),K_inv),dK_sigma),K_inv),self.y)
+            g2 = np.trace(np.matmul(K_inv,dK_sigma))
+            g3 = 0
+            return (g1 + g2)/2
+
+        grad_ln_sigma_b = gradcom(dK_sigma_b)
+        grad_ln_sigma_v = gradcom(dK_sigma_v)
+
+        print(grad_ln_sigma_b.shape,grad_ln_sigma_v.shape)
 
         # Combine gradients
         gradients = np.array([grad_ln_sigma_b, grad_ln_sigma_v, grad_ln_sigma_f, grad_ln_length_scale, grad_ln_sigma_n])
@@ -242,7 +254,9 @@ if __name__ == '__main__':
     params = [0,0,0,np.log(0.1),0.5*np.log(0.5)]
     my_k = LinearPlusRBF(params=params)
     my_GP = GaussianProcessRegression(X=X_train, y=y_train, k=my_k)
-    my_GP.optimize(params=params,disp=True)
+    print(my_GP.logMarginalLikelihood().shape)
+    my_GP.gradLogMarginalLikelihood()
+    #my_GP.optimize(params=params,disp=True)
 
     ##########################
     # You can put your tests here - marking
