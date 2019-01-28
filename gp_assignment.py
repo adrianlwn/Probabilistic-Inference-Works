@@ -149,8 +149,14 @@ class GaussianProcessRegression():
         cov_fa = np.zeros((Xa.shape[0], Xa.shape[0]))
         # Task 3:
         # TODO: compute the mean and covariance of the prediction
-
+        Ka = self.k.covMatrix(self.X,Xa)
+        Kxa = Ka[:self.X.shape[0],-Xa.shape[0]:]
+        Kaa = Ka[-Xa.shape[0]:,-Xa.shape[0]:]
+        K_noise_inv = np.linalg.inv(self.K)
+        mean_fa = np.transpose(Kxa) @  K_noise_inv @ self.y
+        cov_fa = Kaa - np.transpose(Kxa) @  K_noise_inv @ Kxa
         # Return the mean and covariance
+
         return mean_fa, cov_fa
 
     # ##########################################################################
@@ -221,7 +227,14 @@ class GaussianProcessRegression():
 if __name__ == '__main__':
 
     np.random.seed(42)
-
+    df = 'boston_housing.txt'
+    X_train, y_train, X_test, y_test = loadData(df)
+    print(X_train.shape,y_train.shape)
+    print(X_test.shape,y_test.shape)
+    params = [1,1,1,1,1]
+    my_k = LinearPlusRBF(params=params)
+    my_GP = GaussianProcessRegression(X=X_train, y=y_train, k=my_k)
+    print(my_GP.predict(Xa=X_test))
 
     ##########################
     # You can put your tests here - marking
