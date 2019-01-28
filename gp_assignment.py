@@ -138,7 +138,6 @@ class GaussianProcessRegression():
         self.K = K
         self.L = np.linalg.cholesky(self.K)
         return K
-
     # ##########################################################################
     # Computes the posterior mean of the Gaussian process regression and the
     # covariance for a set of test points.
@@ -152,9 +151,12 @@ class GaussianProcessRegression():
         Ka = self.k.covMatrix(self.X,Xa)
         Kxa = Ka[:self.X.shape[0],-Xa.shape[0]:]
         Kaa = Ka[-Xa.shape[0]:,-Xa.shape[0]:] - self.k.sigma2_n * np.eye(Xa.shape[0])
-        K_noise_inv = np.linalg.inv(self.K)
-        mean_fa = np.matmul( np.transpose(Kxa) ,  np.matmul(K_noise_inv ,self.y))
-        cov_fa =  Kaa - np.matmul(np.matmul(np.transpose(Kxa),  K_noise_inv  ), Kxa)
+
+        L_inv = np.linalg.inv(self.L)
+        K_inv = np.matmul(L_inv.transpose(),L_inv)
+
+        mean_fa = np.matmul( np.transpose(Kxa) ,  np.matmul(K_inv ,self.y))
+        cov_fa =  Kaa - np.matmul(np.matmul(np.transpose(Kxa),  K_inv  ), Kxa)
         # Return the mean and covariance
         print(cov_fa.shape)
 
@@ -170,8 +172,9 @@ class GaussianProcessRegression():
 
         # Task 4:
         # TODO: Calculate the log marginal likelihood ( mll ) of self.y
-        K_inv = np.linalg.inv(self.K)
-        K_det = np.linalg.det(self.K)
+        L_inv = np.linalg.inv(self.L)
+        K_inv = np.matmul(L_inv.transpose(),L_inv)
+        K_det = np.linalg.det(self.L)**2
         mll = (np.matmul(np.matmul(np.transpose(self.y),K_inv),self.y) + np.log(K_det) + self.n*np.log(2*np.pi))/2
         # Return mll
         return mll
@@ -188,8 +191,9 @@ class GaussianProcessRegression():
         # Task 5:
         # TODO: calculate the gradients of the negative log marginal likelihood
         # wrt. the hyperparameters
-        K_inv_t = np.transpose(np.linalg.inv(K))
-        grad_com = - np.matmul(np.matmul(np.matmul( K_inv_t,self.y),self.y.transpose()),K_inv_t)
+        L_inv = np.linalg.inv(self.L)
+        K_inv = np.matmul(L_inv.transpose(),L_inv)
+        grad_com = - np.matmul(np.matmul(np.matmul( K_inv,self.y),self.y.transpose()),K_inv)
         grad_ln_sigma_b = np.matmul(grad_com, np.ones(self.K.shape)*2*self.k.sigma2_b)
 
         # Combine gradients
