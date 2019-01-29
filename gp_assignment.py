@@ -158,7 +158,6 @@ class GaussianProcessRegression():
         mean_fa = np.matmul( np.transpose(Kxa) ,  np.matmul(K_inv ,self.y))
         cov_fa =  Kaa - np.matmul(np.matmul(np.transpose(Kxa),  K_inv  ), Kxa)
         # Return the mean and covariance
-        print(cov_fa.shape)
 
         return mean_fa, cov_fa
 
@@ -174,8 +173,8 @@ class GaussianProcessRegression():
         # TODO: Calculate the log marginal likelihood ( mll ) of self.y
         L_inv = np.linalg.inv(self.L)
         K_inv = np.matmul(L_inv.transpose(),L_inv)
-        K_det = np.linalg.det(self.L)**2
-        mll = float((np.matmul(np.matmul(np.transpose(self.y),K_inv),self.y) + np.log(K_det) + self.n*np.log(2*np.pi))/2.)
+        s, log_det_K = np.linalg.slogdet(self.K)
+        mll = float((np.matmul(np.matmul(np.transpose(self.y),K_inv),self.y) + log_det_K + self.n*np.log(2*np.pi))/2.)
         # Return mll
         return mll
 
@@ -225,9 +224,9 @@ class GaussianProcessRegression():
     # Computes the mean squared error between two input vectors.
     # ##########################################################################
     def mse(self, ya, fbar):
-        mse = 0
         # Task 7:
         # TODO: Implement the MSE between ya and fbar
+        mse = 1/float(len(ya)) * np.sum([(ya[i] - fbar[i])**2 for i in range(len(ya))])
 
         # Return mse
         return mse
@@ -236,11 +235,15 @@ class GaussianProcessRegression():
     # Computes the mean standardised log loss.
     # ##########################################################################
     def msll(self, ya, fbar, cov):
-        msll = 0
         # Task 7:
         # TODO: Implement MSLL of the prediction fbar, cov given the target ya
-
         # Return msll
+        pred_var = np.array([cov[i,i] + self.k.ln_sigma_n * cov[i,i]  for i in range(len(ya)) ] )
+        def msll_i(i):
+            return (1/2.)*np.log(2*np.pi*pred_var[i]) + (ya[i] - fbar[i])**2 / float(2*pred_var[i])
+
+
+        msll = np.sum([msll_i(i) for i in range(len(ya))])
         return msll
 
     # ##########################################################################
@@ -259,12 +262,24 @@ if __name__ == '__main__':
     X_train, y_train, X_test, y_test = loadData(df)
     print(X_train.shape,y_train.shape)
     print(X_test.shape,y_test.shape)
-    params = [0,0,0,np.log(0.1),0.5*np.log(0.5)]
+
+    params = [0,0,0, np.log(0.1), 0.5*np.log(0.5)]
+
     my_k = LinearPlusRBF(params=params)
     my_GP = GaussianProcessRegression(X=X_train, y=y_train, k=my_k)
-    print(my_GP.logMarginalLikelihood())
-    print(my_GP.gradLogMarginalLikelihood())
-    print(my_GP.optimize(params=params,disp=True))
+
+    param_estim = my_GP.optimize(params=params,disp=True)
+
+    my_GP.KMat(X=X_train, params=param_estim)
+
+    mean_fa, cov_fa = my_GP.predict(Xa=X_test)
+    mse = my_GP.mse(ya=y_test, fbar= mean_fa)
+    msll = my_GP.msll(ya=y_test, fbar= mean_fa, cov=cov_fa)
+    print('MSE = ' + str(mse))
+    print('MSLL = ' + str(msll))
+
+
+
 
     ##########################
     # You can put your tests here - marking
