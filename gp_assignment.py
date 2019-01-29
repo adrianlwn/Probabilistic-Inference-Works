@@ -238,12 +238,12 @@ class GaussianProcessRegression():
         # Task 7:
         # TODO: Implement MSLL of the prediction fbar, cov given the target ya
         # Return msll
-        pred_var = np.array([cov[i,i] + self.k.ln_sigma_n * cov[i,i]  for i in range(len(ya)) ] )
+        pred_var = np.array([cov[i,i] + self.k.ln_sigma_n   for i in range(len(ya)) ] )
         def msll_i(i):
             return (1/2.)*np.log(2*np.pi*pred_var[i]) + (ya[i] - fbar[i])**2 / float(2*pred_var[i])
 
 
-        msll = np.sum([msll_i(i) for i in range(len(ya))])
+        msll = (1/float(len(fa))) * np.sum([msll_i(i) for i in range(len(ya))])
         return msll
 
     # ##########################################################################
