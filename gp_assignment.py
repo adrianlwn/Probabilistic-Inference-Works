@@ -243,7 +243,7 @@ class GaussianProcessRegression():
             return (1/2.)*np.log(2*np.pi*pred_var[i]) + (ya[i] - fbar[i])**2 / float(2*pred_var[i])
 
 
-        msll = (1/float(len(fa))) * np.sum([msll_i(i) for i in range(len(ya))])
+        msll = (1/float(len(ya))) * np.sum([msll_i(i) for i in range(len(ya))])
         return msll
 
     # ##########################################################################
