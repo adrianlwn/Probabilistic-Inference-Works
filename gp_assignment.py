@@ -238,12 +238,11 @@ class GaussianProcessRegression():
         # Task 7:
         # TODO: Implement MSLL of the prediction fbar, cov given the target ya
         # Return msll
-        pred_var = np.array([cov[i,i] + self.k.ln_sigma_n   for i in range(len(ya)) ] )
+        pred_var = np.array([cov[i,i] + self.k.sigma2_n   for i in range(len(ya)) ] )
         def msll_i(i):
             return (1/2.)*np.log(2*np.pi*pred_var[i]) + (ya[i] - fbar[i])**2 / float(2*pred_var[i])
 
-
-        msll = (1/float(len(ya))) * np.sum([msll_i(i) for i in range(len(ya))])
+        msll = (1/float(ya.shape[0])) * np.sum([msll_i(i) for i in range(len(ya))])
         return msll
 
     # ##########################################################################
@@ -268,6 +267,8 @@ if __name__ == '__main__':
     my_k = LinearPlusRBF(params=params)
     my_GP = GaussianProcessRegression(X=X_train, y=y_train, k=my_k)
 
+    mean_fa, cov_fa = my_GP.predict(Xa=X_test)
+
     param_estim = my_GP.optimize(params=params,disp=True)
 
     my_GP.KMat(X=X_train, params=param_estim)
@@ -277,6 +278,10 @@ if __name__ == '__main__':
     msll = my_GP.msll(ya=y_test, fbar= mean_fa, cov=cov_fa)
     print('MSE = ' + str(mse))
     print('MSLL = ' + str(msll))
+
+
+
+
 
 
 
