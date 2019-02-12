@@ -198,8 +198,10 @@ def get_posterior(X, y, m, S):
     # TODO: Calculate the Laplace approximation of p(theta | X, y)
 
     mu_post = map_estimate(X, y, m, S)
-
-    S_post = linalg.inv(S) + np.einsum('qu,qk,qp -> kp',y*(1-y),X,X)
+    def S_i(X_i,y_i):
+        return y_i*(1-y_i)*np.matmul(X_i.transpose(),X_i)
+    S_ = np.sum(np.array([S_i(X[i,:],y[i]) for i in range(X.shape[0])]),axis=0)
+    S_post = linalg.inv(S) + S_#np.einsum('qu,qk,qp -> kp',y*(1-y),X,X)
 
     return mu_post, S_post
 
