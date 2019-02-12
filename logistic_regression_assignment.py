@@ -175,8 +175,8 @@ def laplace_q(z):
     A = (0.5*np.exp(-1))**-1
     q_dist = stats.multivariate_normal(mean=z_star,cov=A)
 
-    q = q_dist.pdf(z)
-
+    q = q_dist.pdf(z.flatten(-1))
+    print(q)
     return q
 
 
