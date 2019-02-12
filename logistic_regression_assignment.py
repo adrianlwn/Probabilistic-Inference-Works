@@ -171,7 +171,11 @@ def laplace_q(z):
 
     # Task 6:
     # TODO: Evaluate the Laplace approximation $q(z)$.
+    z_star = 2
+    A = (0.5*np.exp(-1))**-1
+    q_dist = stats.multivariate_normal(mean=z_star,cov=A)
 
+    q = q_dist.pdf(z)
 
     return q
 
