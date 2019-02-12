@@ -171,7 +171,6 @@ def laplace_q(z):
 
     # Task 6:
     # TODO: Evaluate the Laplace approximation $q(z)$.
-    stats.
 
 
     return q
