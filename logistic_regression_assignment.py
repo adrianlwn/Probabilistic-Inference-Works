@@ -125,7 +125,7 @@ def neg_log_posterior(theta, X, y, m, S):
     #print(prior_theta,theta.shape,prior_theta.logpdf(theta),log_likelihood(X, y, theta))
     negative_log_posterior = -(log_likelihood(X, y, theta) + prior_theta.logpdf(theta.flatten(-1)))
 
-    return np.array(negative_log_posterior)
+    return negative_log_posterior
 
 
 # ##############################################################################
@@ -155,7 +155,6 @@ def map_estimate(X, y, m, S):
                         x0=theta_init ,
                         method='BFGS', )
     theta_map = optMAP.x
-
     return theta_map
 
 
@@ -172,6 +171,8 @@ def laplace_q(z):
 
     # Task 6:
     # TODO: Evaluate the Laplace approximation $q(z)$.
+    stats.
+
 
     return q
 
