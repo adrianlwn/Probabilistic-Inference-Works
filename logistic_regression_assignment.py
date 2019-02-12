@@ -124,7 +124,6 @@ def neg_log_posterior(theta, X, y, m, S):
     prior_theta = stats.multivariate_normal(mean=m.flatten(-1), cov=S)
     #print(prior_theta,theta.shape,prior_theta.logpdf(theta),log_likelihood(X, y, theta))
     negative_log_posterior = -(log_likelihood(X, y, theta) + prior_theta.logpdf(theta.flatten(-1) ) + np.log(2*np.pi) + np.log(linalg.det(S)) )
-
     return negative_log_posterior
 
 
@@ -197,6 +196,10 @@ def get_posterior(X, y, m, S):
 
     # Task 7:
     # TODO: Calculate the Laplace approximation of p(theta | X, y)
+
+    mu_post = map_estimate(X, y, m, S)
+    
+    S_post = linalg.inv(S) + np.einsum('ix,ix,ij,ik -> jk',y,(1-y),X,X)
 
     return mu_post, S_post
 
