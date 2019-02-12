@@ -123,7 +123,7 @@ def neg_log_posterior(theta, X, y, m, S):
 
     prior_theta = stats.multivariate_normal(mean=m.flatten(-1), cov=S)
     #print(prior_theta,theta.shape,prior_theta.logpdf(theta),log_likelihood(X, y, theta))
-    negative_log_posterior = -(log_likelihood(X, y, theta) + prior_theta.logpdf(theta.flatten(-1)))
+    negative_log_posterior = -0.5*(log_likelihood(X, y, theta) + prior_theta.logpdf(theta.flatten(-1)))
 
     return negative_log_posterior
 
