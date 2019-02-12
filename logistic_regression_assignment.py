@@ -116,13 +116,12 @@ def neg_log_posterior(theta, X, y, m, S):
     # m: D x 1 prior mean of parameters
     # S: D x D prior covariance of parameters
     # returns: scalar negative log posterior
-
     negative_log_posterior = 0
 
     # Task 4:
     # TODO: Calculate the log-posterior
 
-    prior_theta = stats.multivariate_normal(mean=m, cov=S)
+    prior_theta = stats.multivariate_normal(mean=m.flatten(-1), cov=S)
 
     negative_log_posterior = -(log_likelihood(X, y, theta) + prior_theta.logpdf(theta))
 
@@ -149,6 +148,14 @@ def map_estimate(X, y, m, S):
     # Task 5:
     # TODO: Optimize the log-posterior function you've
     # written above an obtain a maximum a posteriori estimate
+    print(m)
+    def neg_log_map(theta):
+        return neg_log_posterior(theta, X, y, m, S)
+
+    optMAP = optimize.minimize(  fun=neg_log_map,
+                        x0=theta_init ,
+                        method='BFGS', )
+    theta_map = optMAP.x
 
     return theta_map
 
