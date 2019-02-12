@@ -25,6 +25,8 @@ def load_data(N=50, jitter=0.7, offset=1.2):
     return x_train, y, x_test
 
 
+def sigmoid(x):
+    return 1/(1+np.exp(-x))
 # ##############################################################################
 # predict takes a input matrix X and parameters of the logistic regression theta
 # and predicts the output of the logistic regression.
@@ -33,10 +35,11 @@ def predict(X, theta):
     # X: K x D matrix of test inputs
     # theta: D x 1 vector of parameters
     # returns: prediction of f(X); K x 1 vector
-    prediction = np.zeros((X.shape[0], 1))
 
     # Task 1:
     # TODO: Implement the prediction of a logistic regression here.
+
+    prediction = sigmoid(np.matmul(X,theta))
 
     return prediction
 
@@ -62,11 +65,14 @@ def log_likelihood(X, y, theta):
     # theta: parameters (D x 1)
     # returns: log likelihood, scalar
 
-    L = 0
-
     # Task 2:
     # TODO: Calculate the log-likelihood of a dataset
     # given a value of theta.
+    def L_i(X_i,y_i):
+        sig = predict(X_i.transpose(),theta)
+        return y_i*np.log(sig) + (1-y_i)*np.log(1-sig)
+
+    L = np.sum([L_i(X[i,:],y[i]) for i in range(X.shape[0])])
 
     return L
 
@@ -88,7 +94,13 @@ def max_lik_estimate(X, y):
     # Task 3:
     # TODO: Optimize the log-likelihood function you've
     # written above an obtain a maximum likelihood estimate
+    def neg_log_ll(theta):
+        return -log_likelihood(X,y,theta)
 
+    optML = optimize.minimize(  fun=neg_log_ll,
+                        x0=theta_init ,
+                        method='BFGS', )
+    theta_ml = optML.x
     return theta_ml
 
 
