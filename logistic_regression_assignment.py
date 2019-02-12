@@ -166,17 +166,15 @@ def laplace_q(z):
     # z: double array of size (T,)
     # returns: array with Laplace approximation q evaluated
     #          at all points in z
-    print(z)
     q = np.zeros_like(z)
 
     # Task 6:
     # TODO: Evaluate the Laplace approximation $q(z)$.
     z_star = 2
-    A = (0.5*np.exp(-1))**-1
-    q_dist = stats.multivariate_normal(mean=z_star,cov=A)
+    A_1 = 4
+    q_dist = stats.multivariate_normal(mean=z_star,cov=A_1)
 
     q = q_dist.pdf(z.flatten(-1))
-    print(q)
     return q
 
 
