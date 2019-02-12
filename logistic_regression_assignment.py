@@ -122,6 +122,10 @@ def neg_log_posterior(theta, X, y, m, S):
     # Task 4:
     # TODO: Calculate the log-posterior
 
+    prior_theta = stats.multivariate_normal(mean=m, cov=S)
+
+    negative_log_posterior = -(log_likelihood(X, y, theta) + prior_theta.logpdf(theta))
+
     return negative_log_posterior
 
 
