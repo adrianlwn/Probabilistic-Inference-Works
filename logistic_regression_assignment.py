@@ -166,7 +166,7 @@ def laplace_q(z):
     # z: double array of size (T,)
     # returns: array with Laplace approximation q evaluated
     #          at all points in z
-
+    print(z)
     q = np.zeros_like(z)
 
     # Task 6:
