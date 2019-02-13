@@ -227,10 +227,10 @@ def metropolis_hastings_sample(X, y, m, S, nb_iter):
     mu_post,S_post =  get_posterior(X, y, m, S)
     P_dist = stats.multivariate_normal(mu_post,S_post)
 
-    x = [0,0]
+    x = [1,1]
     i = 0
     while (i<nb_iter):
-        Q_dist = stats.multivariate_normal(mean=x, cov=np.eye(D,D))
+        Q_dist = stats.multivariate_normal(mean=x, cov=1)
         x_tentative = Q_dist.rvs()
         Q_dist_tentative = stats.multivariate_normal(mean=x_tentative, cov=np.eye(D,D))
 
@@ -246,5 +246,6 @@ def metropolis_hastings_sample(X, y, m, S, nb_iter):
             samples[i,:] = x_tentative
             i += 1
             x = x_tentative
+
 
     return samples
