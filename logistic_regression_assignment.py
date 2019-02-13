@@ -224,6 +224,27 @@ def metropolis_hastings_sample(X, y, m, S, nb_iter):
     # TODO: Write a function to sample from the posterior of the
     # parameters of the logistic regression p(theta | X, y) using the
     # Metropolis algorithm.
+    mu_post,S_post =  get_posterior(X, y, m, S)
+    P_dist = stats.multivariate_normal(mu_post,S_post)
 
+    x = [0,0]
+    i = 0
+    while (i<nb_iter):
+        Q_dist = stats.multivariate_normal(mean=x, cov=np.eye(D,D))
+        x_tentative = Q_dist.rvs()
+        Q_dist_tentative = stats.multivariate_normal(mean=x_tentative, cov=np.eye(D,D))
+
+        p_x_tentative = P_dist.pdf(x_tentative)
+        p_x = P_dist.pdf(x)
+
+        q_x_tentative = Q_dist.pdf(x_tentative)
+        q_x = Q_dist_tentative.pdf(x)
+
+        a = p_x_tentative * q_x / (p_x * q_x_tentative)
+
+        if a >= stats.uniform.rvs() :
+            samples[i,:] = x_tentative
+            i += 1
+            x = x_tentative
 
     return samples
