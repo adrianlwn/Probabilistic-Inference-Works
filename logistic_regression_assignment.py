@@ -230,9 +230,10 @@ def metropolis_hastings_sample(X, y, m, S, nb_iter):
     x = [1,1]
     i = 0
     while (i<nb_iter):
-        Q_dist = stats.multivariate_normal(mean=x, cov=1)
+        step_size = 50
+        Q_dist = stats.multivariate_normal(mean=x, cov= step_size *np.eye(D,D))
         x_tentative = Q_dist.rvs()
-        Q_dist_tentative = stats.multivariate_normal(mean=x_tentative, cov=np.eye(D,D))
+        Q_dist_tentative = stats.multivariate_normal(mean=x_tentative, cov= step_size *np.eye(D,D))
 
         p_x_tentative = P_dist.pdf(x_tentative)
         p_x = P_dist.pdf(x)
