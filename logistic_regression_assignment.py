@@ -219,7 +219,7 @@ def metropolis_hastings_sample(X, y, m, S, nb_iter):
 
     D = X.shape[1]
     samples = np.zeros((nb_iter, D))
-    step_size = 0.01
+    step_size = 0.08
     # Task 8:
     # TODO: Write a function to sample from the posterior of the
     # parameters of the logistic regression p(theta | X, y) using the
@@ -253,5 +253,5 @@ def metropolis_hastings_sample(X, y, m, S, nb_iter):
             rejection_rate += 1/nb_iter
 
 
-    print(rejection_rate)
+    print('Rejection Rate : ', rejection_rate*100 ,' % , for step_size : ' , step_size)
     return samples
