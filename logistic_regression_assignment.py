@@ -219,7 +219,8 @@ def metropolis_hastings_sample(X, y, m, S, nb_iter):
 
     D = X.shape[1]
     samples = np.zeros((nb_iter, D))
-    step_size = 0.08
+    step_size = 0.09
+
     # Task 8:
     # TODO: Write a function to sample from the posterior of the
     # parameters of the logistic regression p(theta | X, y) using the
@@ -227,7 +228,6 @@ def metropolis_hastings_sample(X, y, m, S, nb_iter):
     mu_post,S_post =  get_posterior(X, y, m, S)
     #P_dist = stats.multivariate_normal(mu_post,S_post)
     def P_dist(theta):
-
         return np.exp(- neg_log_posterior(np.array(theta), X, y, m, S))
 
     x = [1,1]
