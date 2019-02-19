@@ -219,7 +219,7 @@ def metropolis_hastings_sample(X, y, m, S, nb_iter):
 
     D = X.shape[1]
     samples = np.zeros((nb_iter, D))
-    step_size = 0.0001
+    step_size = 50
 
     # Task 8:
     # TODO: Write a function to sample from the posterior of the
