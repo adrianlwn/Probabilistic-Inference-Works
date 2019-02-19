@@ -237,7 +237,7 @@ def metropolis_hastings_sample(X, y, m, S, nb_iter):
 
         Q_dist = stats.multivariate_normal(mean=x, cov= step_size *np.eye(D,D))
         x_tentative = Q_dist.rvs()
-        Q_dist_tentative = stats.multivariate_normal(mean=x_tentative, cov= step_size *np.eye(D,D))
+        #Q_dist_tentative = stats.multivariate_normal(mean=x_tentative, cov= step_size *np.eye(D,D))
 
         #p_x_tentative = P_dist.pdf(x_tentative)
         #p_x = P_dist.pdf(x)
@@ -245,10 +245,11 @@ def metropolis_hastings_sample(X, y, m, S, nb_iter):
         p_x_tentative = P_dist(x_tentative)
         p_x = P_dist(x)
 
-        q_x_tentative = Q_dist.pdf(x_tentative)
-        q_x = Q_dist_tentative.pdf(x)
+        #q_x_tentative = Q_dist.pdf(x_tentative)
+        #q_x = Q_dist_tentative.pdf(x)
 
-        a = p_x_tentative * q_x / (p_x * q_x_tentative)
+        #a = p_x_tentative * q_x / (p_x * q_x_tentative)
+        a = p_x_tentative /p_x
 
         if a >= stats.uniform.rvs() :
 
