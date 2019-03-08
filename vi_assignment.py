@@ -146,7 +146,7 @@ class GMM_CAVI(object):
 
         """
         Returns the expected log probability density of the joint model
-        log p(X, mu, c) under q(mu, c) - Ignoring constant terms!
+        log p(X, mu, c) under q( , c) - Ignoring constant terms!
         -------
         log_density: scalar
         """
@@ -155,7 +155,16 @@ class GMM_CAVI(object):
         # TODO: Implement the expectation of the log density of the model     #
         #       here and return the sum - ignoring any constant terms         #
         #######################################################################
-        pass
+        log_pmu = -0.5/self.pmu_var *(np.sum(np.sum(self.s2)) + np.diag(np.matmul(self.m,self.m.transpose())))
+        def aux(i,k):
+            return (self.pi[i,k]*(np.dot(self.m[k,:],self.X[k,:]) - 0.5*(np.sum(self.s2[k,:])+ np.dot(self.m[k,:],self.m[k,:])) ))
+
+        log_px = np.sum(np.sum([[aux(i,k) for i in range(self.N)] for k in range(self.K)]))
+
+        log_density = log_pmu + log_density
+        return log_density
+
+
         #######################################################################
         #                         END OF YOUR CODE                            #
         #######################################################################
