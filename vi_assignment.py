@@ -186,7 +186,15 @@ class GMM_CAVI(object):
         # TODO: Implement the expectation of the log variational density here #
         #       and return the sum - ignoring any constant terms              #
         #######################################################################
-        pass
+
+        def aux_qc(i,k):
+            return self.pi[i,k]*np.log(self.pi[i,k])
+        def aux_qmu(k,d):
+            return np.log(self.s2[k,d])
+        log_qc = np.sum([[aux_qc(i,k) for k in range(self.K)] for i in range(self.N)])
+        log_qmu = -0.5*np.sum([[aux_qmu(k,d)for d in range(self.D)] for k in range(self.K)])
+
+        log_q_density = log_qc + log_qmu
         #######################################################################
         #                         END OF YOUR CODE                            #
         #######################################################################
